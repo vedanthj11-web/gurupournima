@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>गुरु पौर्णिमा पीठापुरम — नोंदणी</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --saffron: #E8651A;
+    --saffron-light: #FDF0E8;
+    --saffron-dark: #B84D10;
+    --maroon: #7B1E2E;
+    --cream: #FDFAF5;
+    --text: #1A1208;
+    --text-muted: #6B5B45;
+    --border: #E8DDD0;
+    --white: #FFFFFF;
+    --radius: 14px;
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--maroon);
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+  .header h1 {
+    font-family: 'Tiro Devanagari Marathi', serif;
+    color: #F5D78E;
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .header p { color: rgba(245,215,142,0.65); font-size: 13px; margin-top: 3px; }
+
+  /* PROGRESS */
+  .progress-wrap { max-width: 500px; margin: 1.5rem auto 0; padding: 0 1.25rem; }
+  .progress-steps { display: flex; align-items: center; gap: 0; }
+  .step-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--border); color: var(--text-muted);
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.3s;
+  }
+  .step-dot.active { background: var(--saffron); color: white; }
+  .step-dot.done { background: var(--green); color: white; }
+  .step-line { flex: 1; height: 3px; background: var(--border); transition: background 0.3s; }
+  .step-line.done { background: var(--green); }
+  .progress-label {
+    text-align: center; margin-top: 10px;
+    font-size: 13px; color: var(--text-muted);
+  }
+  .progress-label strong { color: var(--saffron); font-weight: 600; }
+
+  /* CARD */
+  .card {
+    max-width: 500px; margin: 1.25rem auto 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .step-title {
+    font-family: 'Tiro Devanagari Marathi', serif;
+    font-size: 1.2rem; color: var(--maroon);
+    margin-bottom: 0.25rem;
+  }
+  .step-title-en { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+  /* FIELDS */
+  .field { margin-bottom: 1.25rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    font-family: 'Tiro Devanagari Marathi', serif;
+    font-size: 1.05rem; color: var(--text);
+    display: block; margin-bottom: 2px;
+  }
+  .field-label-en { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 8px; }
+  .req { color: var(--saffron); }
+
+  input[type=text], input[type=tel] {
+    width: 100%; padding: 14px 14px;
+    font-size: 17px; font-family: 'DM Sans', sans-serif;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    background: var(--cream); color: var(--text); outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=tel]:focus {
+    border-color: var(--saffron); background: white;
+  }
+
+  /* BIG RADIO BUTTONS */
+  .radio-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-opt input { display: none; }
+  .radio-opt label {
+    display: block; padding: 12px 18px;
+    font-size: 16px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    border-radius: 10px; cursor: pointer;
+    background: var(--cream); color: var(--text-muted);
+    transition: all 0.15s; text-align: center;
+    min-width: 120px;
+  }
+  .radio-opt label .m {
+    font-family: 'Tiro Devanagari Marathi', serif;
+    font-size: 17px; display: block; color: var(--text);
+    margin-bottom: 2px;
+  }
+  .radio-opt input:checked + label {
+    background: var(--saffron-light);
+    border-color: var(--saffron);
+    color: var(--saffron-dark);
+  }
+  .radio-opt input:checked + label .m { color: var(--saffron-dark); }
+
+  /* BIG NUMBER BUTTONS */
+  .num-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .num-btn {
+    width: 58px; height: 58px;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    background: var(--cream); color: var(--text-muted);
+    font-size: 22px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .num-btn:hover { border-color: var(--saffron); color: var(--saffron); }
+  .num-btn.active { background: var(--saffron); border-color: var(--saffron); color: white; }
+
+  /* DYNAMIC NAME FIELDS */
+  .name-fields { margin-top: 1rem; display: flex; flex-direction: column; gap: 10px; }
+  .name-field-wrap { position: relative; }
+  .name-field-num {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    background: var(--cream); padding: 0 4px;
+  }
+  .name-field-wrap input { padding-left: 36px; }
+
+  /* AMOUNT BOX */
+  .amount-box {
+    background: var(--maroon); border-radius: var(--radius);
+    padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .amount-box .lbl {
+    font-family: 'Tiro Devanagari Marathi', serif;
+    font-size: 1rem; color: rgba(245,215,142,0.7); margin-bottom: 4px;
+  }
+  .amount-box .val { font-size: 40px; font-weight: 700; color: #F5D78E; }
+  .amount-box .breakdown { font-size: 13px; color: rgba(245,215,142,0.55); margin-top: 4px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 1.5rem; }
+  .btn-next {
+    flex: 1; padding: 16px; font-size: 18px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--saffron); color: white;
+    border: none; border-radius: 12px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-next:hover { background: var(--saffron-dark); }
+  .btn-back {
+    padding: 16px 20px; font-size: 18px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream); color: var(--text-muted);
+    border: 1.5px solid var(--border); border-radius: 12px; cursor: pointer;
+  }
+  .btn-pay {
+    flex: 1; padding: 16px; font-size: 18px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--green); color: white;
+    border: none; border-radius: 12px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-pay:hover { background: #1B5E20; }
+
+  .err { font-size: 14px; color: #C0392B; margin-top: 6px; display: none; }
+
+  /* SUMMARY */
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-lbl { color: var(--text-muted); font-size: 13px; flex-shrink: 0; margin-right: 12px; }
+  .summary-val { font-weight: 500; text-align: right; }
+
+  /* OVERLAY */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,18,8,0.65); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .overlay-box {
+    background: white; border-radius: var(--radius);
+    padding: 2rem 2.5rem; text-align: center;
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid var(--saffron-light);
+    border-top-color: var(--saffron); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .overlay-box p { font-size: 16px; color: var(--text-muted); }
+  .overlay-box .m { font-family: 'Tiro Devanagari Marathi', serif; font-size: 18px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>गुरु पौर्णिमा पीठापुरम</h1>
+  <p>Guru Pournima Pithapuram — Registration & Stay Payment</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step-dot active" id="dot-1">1</div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-dot" id="dot-2">2</div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-dot" id="dot-3">3</div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-dot" id="dot-4">4</div>
+  </div>
+  <div class="progress-label" id="progress-label">पायरी <strong>1</strong> / 4</div>
+</div>
+
+<div class="card">
+
+  <!-- STEP 1: Contact Info -->
+  <div class="step active" id="step-1">
+    <div class="step-title">संपर्क माहिती</div>
+    <div class="step-title-en">Contact Information</div>
+
+    <div class="field">
+      <span class="field-label">मोबाइल नंबर <span class="req">*</span></span>
+      <span class="field-label-en">Mobile Number</span>
+      <input type="tel" id="mobile" placeholder="10 अंकी नंबर / 10-digit number" maxlength="10">
+      <div class="err" id="err-mobile">कृपया योग्य 10 अंकी मोबाइल नंबर भरा.</div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">तुम्ही कोणत्या गाव / शहरातून येत आहात? <span class="req">*</span></span>
+      <span class="field-label-en">Which city / village are you travelling from?</span>
+      <input type="text" id="city" placeholder="गाव किंवा शहराचे नाव...">
+      <div class="err" id="err-city">कृपया गाव / शहर भरा.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="goStep(2)">पुढे → Next</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Arrival -->
+  <div class="step" id="step-2">
+    <div class="step-title">येण्याची माहिती</div>
+    <div class="step-title-en">Arrival Details</div>
+
+    <div class="field">
+      <span class="field-label">येण्याची तारीख <span class="req">*</span></span>
+      <span class="field-label-en">Arrival Date</span>
+      <div class="radio-grid">
+        <div class="radio-opt">
+          <input type="radio" name="date" id="d1" value="28 July">
+          <label for="d1"><span class="m">२८ जुलै</span>28 July</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="date" id="d2" value="29 July">
+          <label for="d2"><span class="m">२९ जुलै</span>29 July</label>
+        </div>
+      </div>
+      <div class="err" id="err-date">कृपया तारीख निवडा.</div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">येण्याची अंदाजे वेळ <span class="req">*</span></span>
+      <span class="field-label-en">Approximate Arrival Time at Pithapuram</span>
+      <div class="radio-grid">
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t1" value="12AM-6AM">
+          <label for="t1"><span class="m">मध्यरात्र / पहाट</span>12 AM – 6 AM</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t2" value="6AM-12PM">
+          <label for="t2"><span class="m">सकाळ</span>6 AM – 12 PM</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t3" value="12PM-4PM">
+          <label for="t3"><span class="m">दुपार</span>12 PM – 4 PM</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t4" value="4PM-8PM">
+          <label for="t4"><span class="m">संध्याकाळ</span>4 PM – 8 PM</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t5" value="8PM-12AM">
+          <label for="t5"><span class="m">रात्र</span>8 PM – 12 AM</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="time" id="t6" value="Not Sure">
+          <label for="t6"><span class="m">निश्चित नाही</span>Not Sure</label>
+        </div>
+      </div>
+      <div class="err" id="err-time">कृपया वेळ निवडा.</div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">राहण्याचे दिवस <span class="req">*</span></span>
+      <span class="field-label-en">Days of Stay</span>
+      <div class="radio-grid">
+        <div class="radio-opt">
+          <input type="radio" name="days" id="dy1" value="1">
+          <label for="dy1"><span class="m">१ दिवस</span>1 Day</label>
+        </div>
+        <div class="radio-opt">
+          <input type="radio" name="days" id="dy2" value="2">
+          <label for="dy2"><span class="m">२ दिवस</span>2 Days</label>
+        </div>
+      </div>
+      <div class="err" id="err-days">कृपया दिवस निवडा.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(1)">← मागे</button>
+      <button class="btn-next" onclick="goStep(3)">पुढे → Next</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Members & Names -->
+  <div class="step" id="step-3">
+    <div class="step-title">सदस्यांची माहिती</div>
+    <div class="step-title-en">Member Details</div>
+
+    <div class="field">
+      <span class="field-label">पुरुष संख्या <span class="req">*</span></span>
+      <span class="field-label-en">Number of Males</span>
+      <div class="num-row" id="males-group">
+        <button class="num-btn active" onclick="pick('males',0,this)">0</button>
+        <button class="num-btn" onclick="pick('males',1,this)">1</button>
+        <button class="num-btn" onclick="pick('males',2,this)">2</button>
+        <button class="num-btn" onclick="pick('males',3,this)">3</button>
+        <button class="num-btn" onclick="pick('males',4,this)">4</button>
+        <button class="num-btn" onclick="pick('males',5,this)">5</button>
+      </div>
+      <div class="name-fields" id="male-names"></div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">महिला संख्या <span class="req">*</span></span>
+      <span class="field-label-en">Number of Females</span>
+      <div class="num-row" id="females-group">
+        <button class="num-btn active" onclick="pick('females',0,this)">0</button>
+        <button class="num-btn" onclick="pick('females',1,this)">1</button>
+        <button class="num-btn" onclick="pick('females',2,this)">2</button>
+        <button class="num-btn" onclick="pick('females',3,this)">3</button>
+        <button class="num-btn" onclick="pick('females',4,this)">4</button>
+        <button class="num-btn" onclick="pick('females',5,this)">5</button>
+      </div>
+      <div class="name-fields" id="female-names"></div>
+    </div>
+
+    <div class="err" id="err-zero" style="font-size:15px; margin-top:8px;">कृपया किमान १ सदस्य निवडा. / Please select at least 1 member.</div>
+    <div class="err" id="err-names">कृपया सर्व नावे भरा. / Please fill all names.</div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(2)">← मागे</button>
+      <button class="btn-next" onclick="goStep(4)">पुढे → Next</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Summary & Pay -->
+  <div class="step" id="step-4">
+    <div class="step-title">तपासा आणि पेमेंट करा</div>
+    <div class="step-title-en">Review & Pay</div>
+
+    <div id="summary" style="margin-bottom: 1.25rem;"></div>
+
+    <div class="amount-box">
+      <div class="lbl">एकूण रक्कम (Total Amount)</div>
+      <div class="val" id="amt-display">₹0</div>
+      <div class="breakdown" id="breakdown-display"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(3)">← मागे</button>
+      <button class="btn-pay" onclick="handlePay()">✓ पेमेंट करा — Pay Now</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="spinner"></div>
+    <div class="m">नोंदणी जतन होत आहे...</div>
+    <p>Saving your registration...</p>
+  </div>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhM1XhlbntKrFnkbhr_6TSXL_I_9UdR74NQbN4D7t1t4XL8Sc5ym28Pwn93pIPTe9GYA/exec';
+  const BASE = 'https://smartpay.easebuzz.in/265911/';
+
+  const state = { males: 0, females: 0, days: null };
+
+  // Number picker
+  function pick(type, val, btn) {
+    state[type] = val;
+    document.querySelectorAll('#' + type + '-group .num-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderNameFields(type, val);
+  }
+
+  function renderNameFields(type, count) {
+    const container = document.getElementById(type === 'males' ? 'male-names' : 'female-names');
+    const labelMr = type === 'males' ? 'पुरुष' : 'महिला';
+    const labelEn = type === 'males' ? 'Male' : 'Female';
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'name-field-wrap';
+      wrap.innerHTML = `
+        <span class="name-field-num">${i}.</span>
+        <input type="text" id="${type}-name-${i}" placeholder="${labelMr} ${i} चे नाव / ${labelEn} ${i} name">
+      `;
+      container.appendChild(wrap);
+    }
+  }
+
+  // Step navigation
+  function goStep(n) {
+    if (n > 1 && !validateStep(currentStep)) return;
+    currentStep = n;
+    document.querySelectorAll('.step').forEach((s, i) => {
+      s.classList.toggle('active', i + 1 === n);
+    });
+    updateProgress(n);
+    if (n === 4) buildSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  let currentStep = 1;
+
+  function updateProgress(n) {
+    for (let i = 1; i <= 4; i++) {
+      const dot = document.getElementById('dot-' + i);
+      dot.classList.remove('active', 'done');
+      if (i < n) dot.classList.add('done');
+      else if (i === n) dot.classList.add('active');
+    }
+    for (let i = 1; i <= 3; i++) {
+      const line = document.getElementById('line-' + i);
+      line.classList.toggle('done', i < n);
+    }
+    document.getElementById('progress-label').innerHTML = 'पायरी <strong>' + n + '</strong> / 4';
+  }
+
+  function show(id, v) { document.getElementById(id).style.display = v ? 'block' : 'none'; }
+
+  function validateStep(n) {
+    if (n === 1) {
+      const mobile = document.getElementById('mobile').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const mobOk = /^\d{10}$/.test(mobile);
+      show('err-mobile', !mobOk);
+      show('err-city', !city);
+      return mobOk && city;
+    }
+    if (n === 2) {
+      const date = document.querySelector('input[name=date]:checked');
+      const time = document.querySelector('input[name=time]:checked');
+      const days = document.querySelector('input[name=days]:checked');
+      show('err-date', !date);
+      show('err-time', !time);
+      show('err-days', !days);
+      if (days) state.days = parseInt(days.value);
+      return date && time && days;
+    }
+    if (n === 3) {
+      const total = state.males + state.females;
+      if (total === 0) { show('err-zero', true); return false; }
+      show('err-zero', false);
+      let allFilled = true;
+      for (let i = 1; i <= state.males; i++) {
+        const v = document.getElementById('males-name-' + i);
+        if (!v || !v.value.trim()) { allFilled = false; break; }
+      }
+      if (allFilled) {
+        for (let i = 1; i <= state.females; i++) {
+          const v = document.getElementById('females-name-' + i);
+          if (!v || !v.value.trim()) { allFilled = false; break; }
+        }
+      }
+      show('err-names', !allFilled);
+      return allFilled;
+    }
+    return true;
+  }
+
+  function getMaleNames() {
+    const names = [];
+    for (let i = 1; i <= state.males; i++) {
+      const el = document.getElementById('males-name-' + i);
+      if (el) names.push(el.value.trim());
+    }
+    return names;
+  }
+  function getFemaleNames() {
+    const names = [];
+    for (let i = 1; i <= state.females; i++) {
+      const el = document.getElementById('females-name-' + i);
+      if (el) names.push(el.value.trim());
+    }
+    return names;
+  }
+
+  function buildSummary() {
+    const date = document.querySelector('input[name=date]:checked');
+    const time = document.querySelector('input[name=time]:checked');
+    const days = document.querySelector('input[name=days]:checked');
+    const mNames = getMaleNames();
+    const fNames = getFemaleNames();
+    const total = state.males + state.females;
+    const amount = total * state.days * 400;
+
+    const timeLabels = {
+      '12AM-6AM':'मध्यरात्र/पहाट (12 AM–6 AM)',
+      '6AM-12PM':'सकाळ (6 AM–12 PM)',
+      '12PM-4PM':'दुपार (12 PM–4 PM)',
+      '4PM-8PM':'संध्याकाळ (4 PM–8 PM)',
+      '8PM-12AM':'रात्र (8 PM–12 AM)',
+      'Not Sure':'निश्चित नाही'
+    };
+
+    let rows = [
+      ['मोबाइल / Mobile', document.getElementById('mobile').value],
+      ['गाव/शहर / City', document.getElementById('city').value],
+      ['तारीख / Date', date ? date.value : ''],
+      ['वेळ / Time', time ? timeLabels[time.value] : ''],
+      ['दिवस / Days', days ? days.value : ''],
+      ['पुरुष / Males', state.males + (mNames.length ? ': ' + mNames.join(', ') : '')],
+      ['महिला / Females', state.females + (fNames.length ? ': ' + fNames.join(', ') : '')],
+    ];
+
+    document.getElementById('summary').innerHTML = rows.map(r =>
+      `<div class="summary-row"><span class="summary-lbl">${r[0]}</span><span class="summary-val">${r[1]}</span></div>`
+    ).join('');
+
+    document.getElementById('amt-display').textContent = '₹' + amount.toLocaleString('en-IN');
+    document.getElementById('breakdown-display').textContent =
+      '(' + state.males + ' + ' + state.females + ' लोक) × ' + state.days + ' दिवस × ₹400';
+  }
+
+  async function handlePay() {
+    const total = state.males + state.females;
+    const amount = total * state.days * 400;
+    const payLink = BASE + amount;
+
+    const mNames = getMaleNames();
+    const fNames = getFemaleNames();
+    const date = document.querySelector('input[name=date]:checked');
+    const time = document.querySelector('input[name=time]:checked');
+
+    const payload = {
+      mobile: document.getElementById('mobile').value.trim(),
+      city: document.getElementById('city').value.trim(),
+      arrivalDate: date ? date.value : '',
+      arrivalTime: time ? time.value : '',
+      males: state.males,
+      maleNames: mNames.join(', '),
+      females: state.females,
+      femaleNames: fNames.join(', '),
+      days: state.days,
+      allNames: [...mNames, ...fNames].join(', '),
+      amount: amount
+    };
+
+    document.getElementById('overlay').classList.add('show');
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) { console.error(e); }
+
+    document.getElementById('overlay').classList.remove('show');
+    window.location.href = payLink;
+  }
+</script>
+</body>
+</html>
