@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guru Pournima — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --maroon: #7B1E2E; --saffron: #E8651A;
+    --cream: #FDFAF5; --white: #fff; --text: #1A1208; --muted: #6B5B45;
+    --border: #E8DDD0; --green: #2E7D32; --green-light: #E8F5E9;
+    --blue: #1565C0; --blue-light: #E3F0FB;
+    --pink: #880E4F; --pink-light: #FCE4EC;
+    --radius: 14px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  .header { background: var(--maroon); padding: 1.25rem 1.5rem; text-align: center; }
+  .header h1 { color: #F5D78E; font-size: 1.15rem; font-weight: 600; }
+  .header p { color: rgba(245,215,142,0.6); font-size: 12px; margin-top: 3px; }
+
+  .container { max-width: 520px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  .refresh-btn {
+    display: block; width: 100%; margin-bottom: 1.25rem;
+    padding: 11px; font-size: 14px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 10px; cursor: pointer; color: var(--muted);
+    transition: all 0.2s; text-align: center;
+  }
+  .refresh-btn:hover { border-color: var(--saffron); color: var(--saffron); }
+
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .metric {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05); text-align: center;
+  }
+  .metric.full { grid-column: 1 / -1; }
+  .metric-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .metric-value { font-size: 42px; font-weight: 700; line-height: 1; }
+  .metric-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .metric.blue .metric-value { color: var(--blue); }
+  .metric.pink .metric-value { color: var(--pink); }
+  .metric.saffron .metric-value { color: var(--saffron); }
+  .metric.green .metric-value { color: var(--green); }
+
+  .status { text-align: center; font-size: 13px; color: var(--muted); margin-top: 1rem; }
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid var(--border); border-top-color: var(--saffron);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error { color: #C0392B; font-size: 13px; text-align: center; margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🪔 Guru Pournima Pithapuram</h1>
+  <p>Registration Dashboard</p>
+</div>
+
+<div class="container">
+
+  <button class="refresh-btn" onclick="loadData()">↻ Refresh Data</button>
+
+  <div class="metrics">
+    <div class="metric blue">
+      <div class="metric-label">👨 Male Registrations</div>
+      <div class="metric-value" id="m-males">—</div>
+      <div class="metric-sub">total males</div>
+    </div>
+    <div class="metric pink">
+      <div class="metric-label">👩 Female Registrations</div>
+      <div class="metric-value" id="m-females">—</div>
+      <div class="metric-sub">total females</div>
+    </div>
+    <div class="metric saffron full">
+      <div class="metric-label">👥 Total Registrations</div>
+      <div class="metric-value" id="m-total">—</div>
+      <div class="metric-sub">total people registered</div>
+    </div>
+    <div class="metric green full">
+      <div class="metric-label">💰 Expected Amount</div>
+      <div class="metric-value" id="m-amount">—</div>
+      <div class="metric-sub">based on registrations × days × ₹400</div>
+    </div>
+  </div>
+
+  <div class="status" id="status"><span class="spinner"></span>Loading data...</div>
+  <div class="error" id="error" style="display:none;"></div>
+</div>
+
+<script>
+  async function loadData() {
+    document.getElementById('status').innerHTML = '<span class="spinner"></span>Loading data...';
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('error').style.display = 'none';
+    ['m-males','m-females','m-total','m-amount'].forEach(id => document.getElementById(id).textContent = '—');
+
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/1hyfnQDYlnkEB9NW4fvLo6mh0TlV1jsb1FAF2mtW_TgA/export?format=csv&gid=0';
+    try {
+      const res = await fetch(csvUrl);
+      if (!res.ok) throw new Error('Could not load sheet');
+      const text = await res.text();
+      const rows = text.trim().split('\n').slice(1).filter(r => r.trim());
+
+      let males = 0, females = 0, amount = 0;
+      rows.forEach(row => {
+        const cols = row.split(',');
+        males   += parseInt(cols[5]) || 0;
+        females += parseInt(cols[7]) || 0;
+        amount  += parseFloat(cols[11]) || 0;
+      });
+
+      document.getElementById('m-males').textContent = males;
+      document.getElementById('m-females').textContent = females;
+      document.getElementById('m-total').textContent = males + females;
+      document.getElementById('m-amount').textContent = '₹' + amount.toLocaleString('en-IN');
+      document.getElementById('status').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+    } catch(e) {
+      document.getElementById('status').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error').textContent = 'Could not load data. Make sure the sheet is shared publicly (Anyone with link → Viewer).';
+    }
+  }
+
+  loadData();
+</script>
+</body>
+</html>
